@@ -1,59 +1,252 @@
-# WebRtcGamifyUi
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.1.
+# Web-RTC-Gamify-UI
 
-## Development server
+**Librería Angular para WebRTC integrada con AlephScript y Sistema de Orquestación**
 
-To start a local development server, run:
+[![Version](https://img.shields.io/npm/v/webrtc-gamification-ui.svg)](https://www.npmjs.com/package/webrtc-gamification-ui)
+[![License: AIPL](https://img.shields.io/badge/License-AIPL-blue.svg)](LICENSE)
 
-```bash
-ng serve
+---
+
+## 🎯 Descripción
+
+`web-rtc-gamify-ui` es una librería Angular que proporciona una interfaz de usuario profesional y elegante para aplicaciones WebRTC, específicamente diseñada para integrarse con el sistema de comunicaciones AlephScript y el orquestador de canales.
+
+### Características principales:
+
+- 🎥 **Comunicaciones WebRTC P2P**: Video, audio y canales de datos
+- 🎮 **Integración con GamificationUI**: Compatible con el patrón de UI existente  
+- 🔌 **AlephScriptClient especializado**: Manejo de señalización a través de Socket.IO
+- 🎨 **UI Profesional**: Interfaz moderna y responsive para controles WebRTC
+- 📡 **WebRTCChannelAgent**: Integración con sistema de orquestación existente
+- 🔄 **RxJS Reactive**: Streams reactivos para estado en tiempo real
+- 🌐 **Cross-browser**: Compatible con navegadores modernos
+- 📱 **Mobile-friendly**: Optimizado para dispositivos móviles
+
+---
+
+## 🏗️ Arquitectura
+
+```
+web-rtc-gamify-ui/
+├── projects/
+│   └── webrtc-ui-lib/               # Librería Angular principal
+│       ├── src/
+│       │   ├── lib/
+│       │   │   ├── core/            # Servicios core y configuración
+│       │   │   │   ├── services/
+│       │   │   │   │   ├── webrtc.service.ts
+│       │   │   │   │   ├── alephscript-webrtc.service.ts
+│       │   │   │   │   └── signaling.service.ts
+│       │   │   │   └── models/
+│       │   │   │       ├── webrtc-config.model.ts
+│       │   │   │       ├── peer.model.ts
+│       │   │   │       └── signaling.model.ts
+│       │   │   ├── features/        # Componentes de funcionalidad
+│       │   │   │   ├── peer-management/
+│       │   │   │   │   ├── peer-list.component.ts
+│       │   │   │   │   └── peer-controls.component.ts
+│       │   │   │   ├── media-controls/
+│       │   │   │   │   ├── video-controls.component.ts
+│       │   │   │   │   ├── audio-controls.component.ts
+│       │   │   │   │   └── screen-share.component.ts
+│       │   │   │   ├── data-channels/
+│       │   │   │   │   ├── chat.component.ts
+│       │   │   │   │   └── file-transfer.component.ts
+│       │   │   │   └── room-management/
+│       │   │   │       ├── room-list.component.ts
+│       │   │   │       ├── room-controls.component.ts
+│       │   │   │       └── room-creation.component.ts
+│       │   │   ├── shared/           # Componentes compartidos
+│       │   │   │   ├── components/
+│       │   │   │   ├── directives/
+│       │   │   │   └── pipes/
+│       │   │   └── utils/            # Utilidades
+│       │   └── public-api.ts
+│       └── dist/                    # Artefactos compilados
+├── demo-app/                        # Aplicación de demostración
+├── scripts/
+│   ├── postinstall.cjs             # Script de instalación
+│   └── build.sh                    # Script de construcción
+└── dist/                           # Distribución final
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## 🚀 Integración con Sistema Existente
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+### Con WebRTCChannelAgent
+```typescript
+// El WebRTCChannelAgent ya implementado maneja:
+- Conexiones peer-to-peer
+- Señalización WebRTC
+- Integración con orchestration channels
+- Streams de medios
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
+### Con AlephScriptClient
+```typescript
+// WebRTCAlephClient extiende AlephScriptClient para:
+- Manejo de señalización a través de Socket.IO
+- Gestión de rooms WebRTC
+- Coordinación con ProserpinaBot, OrfeoBot, EuridiceBot
+- Fallback a Socket.IO cuando WebRTC no esté disponible
 ```
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
+### Con GamificationUI
+```typescript
+// WebRTCGamificationUI extiende GamificationUI para:
+- Interfaz unificada con otras UIs del sistema
+- Integración con MultiUIGameManager
+- Eventos reactivos RxJS
+- Coordinación con orchestrator
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+---
 
-## Running unit tests
+## 📦 Instalación y Uso
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### En state-machine-mcp-driver
 
 ```bash
-ng e2e
+# 1. Instalar el paquete
+npm install webrtc-gamification-ui
+
+# 2. El postinstall automáticamente copia assets a public_templates/
+# Los assets quedan disponibles en: public_templates/webrtc-ui/
+
+# 3. Configurar en MultiUIGameManager
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Configuración Ejemplo
 
-## Additional Resources
+```typescript
+// En examples/webrtc-integration-example.ts
+import { MultiUIGameConfig } from "../src/ui/MultiUIGameConfig";
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+const webrtcConfig: MultiUIGameConfig = {
+  game: {
+    id: "webrtc-demo",
+    name: "WebRTC Communication Demo",
+    version: "1.0.0"
+  },
+  ui: [
+    {
+      id: "webrtc-ui",
+      name: "WebRTC Communication UI",
+      type: "webrtc",
+      enabled: true,
+      config: {
+        port: 9092,
+        provideTemplate: true,
+        enableVideo: true,
+        enableAudio: true,
+        enableDataChannel: true,
+        enableScreenShare: true,
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" }
+        ],
+        // AlephScript room configuration
+        roomConfig: {
+          autoJoin: true,
+          roomName: "webrtc-main-room",
+          maxPeers: 8
+        }
+      }
+    }
+  ]
+};
+```
+
+---
+
+## 🎮 Funcionalidades WebRTC
+
+### 📹 Video y Audio
+- **Cámaras múltiples**: Selección de dispositivos
+- **Configuración de calidad**: Resolución y bitrate adaptativos
+- **Mute/Unmute**: Controles de audio y video
+- **Picture-in-Picture**: Soporte para ventana flotante
+
+### 🖥️ Screen Sharing
+- **Pantalla completa**: Compartir toda la pantalla
+- **Ventana específica**: Compartir aplicación individual
+- **Control remoto**: Manejo de permisos
+
+### 💬 Data Channels
+- **Chat en tiempo real**: Mensajes de texto P2P
+- **Transferencia de archivos**: Drag & drop
+- **Datos de juego**: Estado sincronizado entre peers
+- **Comandos de control**: Integración con AlephScript
+
+### 🏠 Room Management
+- **Creación de rooms**: A través de AlephScript
+- **Join automático**: Basado en configuración
+- **Moderación**: Controles de admin
+- **Persistencia**: Rooms guardadas en AlephScript
+
+---
+
+## 🔧 Desarrollo y Contribución
+
+### Setup del entorno
+```bash
+git clone https://github.com/escrivivir-co/web-rtc-gamify-ui
+cd web-rtc-gamify-ui
+npm install
+```
+
+### Scripts disponibles
+```bash
+npm run build          # Construir librería
+npm run build:package  # Construir y empaquetar
+npm run test           # Ejecutar tests
+npm run lint           # Linter
+npm run demo           # Aplicación de demo
+```
+
+### Testing con state-machine-mcp-driver
+```bash
+# 1. Desde web-rtc-gamify-ui
+npm run build
+
+# 2. Desde state-machine-mcp-driver  
+npm install ../web-rtc-gamify-ui
+npm run webrtc:demo
+```
+
+---
+
+## 🔗 Enlaces Relacionados
+
+- [state-machine-mcp-driver](../state-machine-mcp-driver) - Sistema de orquestación principal
+- [threejs-gamify-ui](../threejs-gamify-ui) - Librería de referencia  
+- [AlephScript Documentation](../socket-gym/alephscript) - Sistema de comunicaciones
+- [WebRTC ChannelAgent](../state-machine-mcp-driver/src/orchestration/channel/webrtc-channel-agent.ts) - Agente de canal implementado
+
+---
+
+## 📝 Licencia
+
+AIPL - Aleph Intelligence Proprietary License
+
+---
+
+## 🤝 Contribuir
+
+1. Fork el proyecto
+2. Crear feature branch (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit cambios (`git commit -am 'Añadir nueva funcionalidad'`)
+4. Push al branch (`git push origin feature/nueva-funcionalidad`)
+5. Crear Pull Request
+
+---
+
+## 🐛 Issues y Soporte
+
+Para reportar bugs o solicitar features, crear un issue en el repositorio correspondiente.
+
+**Mantenido por**: escrivivir-co
+**Estado**: 🚧 En desarrollo
+**Versión actual**: 1.0.0-alpha
+
