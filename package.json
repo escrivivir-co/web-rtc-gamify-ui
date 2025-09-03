@@ -1,0 +1,72 @@
+{
+  "name": "webrtc-gamification-ui",
+  "version": "1.0.0-alpha",
+  "description": "Angular library for WebRTC integration with AlephScript and orchestration system",
+  "keywords": ["webrtc", "angular", "alephscript", "p2p", "gamification"],
+  "license": "AIPL",
+  "main": "dist/webrtc-ui-lib/index.js",
+  "files": [
+    "dist/**/*",
+    "scripts/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/escrivivir-co/web-rtc-gamify-ui"
+  },
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve demo-app",
+    "build": "ng build webrtc-ui-lib",
+    "build:package": "npm run build && npm pack",
+    "build:demo": "ng build demo-app",
+    "serve:demo": "ng serve demo-app",
+    "watch": "ng build webrtc-ui-lib --watch --configuration development",
+    "test": "ng test webrtc-ui-lib",
+    "test:watch": "ng test webrtc-ui-lib --watch",
+    "lint": "ng lint webrtc-ui-lib",
+    "lint:fix": "ng lint webrtc-ui-lib --fix",
+    "postinstall": "node scripts/postinstall.cjs || echo 'Postinstall completed'",
+    "verify": "node scripts/verify-integration.cjs",
+    "pack": "npm pack",
+    "addlibrary": "npx ng generate library NAME --prefix=PREFIX",
+    "addApp": "npx ng generate application NAME --routing=false --style=css"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": false,
+  "dependencies": {
+    "@angular/common": "^20.2.0",
+    "@angular/compiler": "^20.2.0",
+    "@angular/core": "^20.2.0",
+    "@angular/forms": "^20.2.0",
+    "@angular/platform-browser": "^20.2.0",
+    "@angular/router": "^20.2.0",
+    "rxjs": "~7.8.0",
+    "socket.io-client": "^4.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.2.1",
+    "@angular/cli": "^20.2.1",
+    "@angular/compiler-cli": "^20.2.0",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.9.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "ng-packagr": "^20.2.0",
+    "typescript": "~5.9.2"
+  }
+}
