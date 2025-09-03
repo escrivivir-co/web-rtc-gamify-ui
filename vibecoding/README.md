@@ -48,13 +48,13 @@
 
 ### 📈 Reportes de Avance
 
-#### `FASE_4_RESUMEN_EJECUTIVO.md` - Logros Fases 4.1-4.2
+#### `deprecated/FASE_4_RESUMEN_EJECUTIVO.md` - Logros Fases 4.1-4.2 (archivado)
 - **Propósito**: Resumen específico de logros recientes
 - **Contenido**: Servicios implementados, capacidades, próximos pasos
 - **Estado**: ✅ Completado
 - **Uso**: Comunicación de logros específicos
 
-#### `PHASE_4_INTEGRATION_COMPLETE.md` - Reporte Técnico Detallado
+#### `deprecated/PHASE_4_INTEGRATION_COMPLETE.md` - Reporte Técnico Detallado (archivado)
 - **Propósito**: Documentación técnica completa de la integración
 - **Contenido**: Código, configuraciones, arquitectura implementada
 - **Estado**: ✅ Completado
@@ -100,10 +100,7 @@
 ## 📊 Métricas de Progreso
 
 ### Desarrollo Técnico
-- **Archivos TypeScript**: 62/70 archivos (89%)
-- **Servicios Core**: 8/8 servicios (100%)
-- **Componentes UI**: 8/12 componentes (67%)
-- **Build Status**: ✅ Exitoso sin errores
+- Métricas indicativas en `PROGRESS_STATUS.md` (ver sección Métricas). Se actualizan por fase para evitar drift.
 
 ### Documentación
 - **Documentación Base**: 100% completada

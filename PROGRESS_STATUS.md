@@ -220,7 +220,22 @@ export * from './lib/webrtc-ui-lib.module';
 
 ---
 
-## 📈 MÉTRICAS DE PROGRESO
+## � Verificación con la codebase (auditoría rápida)
+
+- Servicios de integración presentes y exportados: `webrtc-aleph-client.service.ts`, `webrtc-engine.service.ts`, `webrtc-orchestrator.service.ts` (OK en `public-api.ts` y `webrtc-ui-lib.module.ts`).
+- Componentes UI verificados:
+  - Media: `video-controls`, `audio-controls`, `screen-share` (OK y exportados).
+  - Data: `chat`, `file-transfer` (OK y exportados).
+  - Room: `room-list`, `room-controls`, `room-creation` (OK y exportados).
+  - Peer: `shared/components/peer-list`, `peer-card`, `connection-controls` (implementados; integrar en superficie pública si aplica al roadmap).
+- Módulo Angular: `WebRTCUILibModule` provee servicios e importa componentes standalone (OK).
+- Orquestación avanzada: `WebRTCGamificationUI.ts` existe como integración de servidor/plantilla (no parte del bundle Angular; corresponde a capa orquestador).
+
+Conclusión: La documentación refleja el estado real. Pendiente decidir si los componentes de `shared/components` se exponen públicamente o se consumen internamente por features.
+
+---
+
+## �📈 MÉTRICAS DE PROGRESO
 
 ### Desarrollo Técnico
 - **Archivos TypeScript**: 65/70 archivos (93%)
