@@ -2,6 +2,9 @@
  * Public API Surface of webrtc-ui-lib
  */
 
+// Main AlephScript Component (New)
+export * from './lib/components/alephscript-webrtc-ui.component';
+
 // Integration Services (Phase 4.1-4.2)
 export * from './lib/integration/webrtc-aleph-client.service';
 export * from './lib/integration/webrtc-engine.service';

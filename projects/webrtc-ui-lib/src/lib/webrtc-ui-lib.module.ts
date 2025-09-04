@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
+// AlephScript main component
+import { AlephScriptWebRTCUIComponent } from './components/alephscript-webrtc-ui.component';
+
 // Integration services
 import { WebRTCAlephClient } from './integration/webrtc-aleph-client.service';
 import { WebRTCEngine } from './integration/webrtc-engine.service';
@@ -22,6 +25,8 @@ import { RoomCreationComponent } from './features/room-management/room-creation.
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    // Main AlephScript component
+    AlephScriptWebRTCUIComponent,
     // Import standalone components instead of declaring them
     ChatComponent,
     FileTransferComponent,
@@ -36,6 +41,8 @@ import { RoomCreationComponent } from './features/room-management/room-creation.
     WebRTCOrchestrator
   ],
   exports: [
+    // Export main component
+    AlephScriptWebRTCUIComponent,
     // Export standalone components
     ChatComponent,
     FileTransferComponent,
@@ -81,6 +88,8 @@ export class WebRTCUILibModule {
  * Standalone components for import without module
  */
 export const WEBRTC_STANDALONE_COMPONENTS = [
+  // Main AlephScript component
+  AlephScriptWebRTCUIComponent,
   // Feature components
   ChatComponent,
   FileTransferComponent,

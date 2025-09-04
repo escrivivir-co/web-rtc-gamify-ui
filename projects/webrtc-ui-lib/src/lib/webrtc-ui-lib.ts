@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
+import { AlephScriptWebRTCUIComponent } from './components/alephscript-webrtc-ui.component';
 
 @Component({
   selector: 'wrtc-webrtc-ui-lib',
-  imports: [],
+  imports: [AlephScriptWebRTCUIComponent],
   template: `
-    <p>
-      webrtc-ui-lib works!
-    </p>
+    <wrtc-alephscript-webrtc-ui></wrtc-alephscript-webrtc-ui>
   `,
   styles: ``
 })
