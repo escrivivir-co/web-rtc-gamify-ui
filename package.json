@@ -1,13 +1,13 @@
 {
   "name": "webrtc-gamification-ui",
   "version": "1.0.0-alpha",
-  "description": "Angular library for WebRTC integration with AlephScript and orchestration system",
+  "description": "Angular UI application for WebRTC integration with AlephScript and orchestration system",
   "keywords": ["webrtc", "angular", "alephscript", "p2p", "gamification"],
   "license": "AIPL",
-  "main": "dist/webrtc-ui-lib/index.js",
+  "main": "dist/index.js",
   "files": [
     "dist/**/*",
-    "scripts/**/*"
+    "scripts/postinstall.cjs"
   ],
   "repository": {
     "type": "git",
@@ -15,19 +15,13 @@
   },
   "scripts": {
     "ng": "ng",
-    "start": "ng serve demo-app",
-    "build": "ng build webrtc-ui-lib",
-    "build:package": "npm run build && npm pack",
-    "build:demo": "ng build demo-app",
-    "serve:demo": "ng serve demo-app",
-    "watch": "ng build webrtc-ui-lib --watch --configuration development",
-    "test": "ng test webrtc-ui-lib",
-    "test:watch": "ng test webrtc-ui-lib --watch",
-    "lint": "ng lint webrtc-ui-lib",
-    "lint:fix": "ng lint webrtc-ui-lib --fix",
+    "start": "ng serve",
+    "build": "ng build",
+    "build:lib": "ng build web-rtc-gamify-ui",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
     "postinstall": "node scripts/postinstall.cjs || echo 'Postinstall completed'",
-    "verify": "node scripts/verify-integration.cjs",
-    "pack": "npm pack",
     "addlibrary": "npx ng generate library NAME --prefix=PREFIX",
     "addApp": "npx ng generate application NAME --routing=false --style=css"
   },

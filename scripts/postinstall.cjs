@@ -1,90 +1,60 @@
 #!/usr/bin/env node
 
-/**
- * PostInstall Script for webrtc-gamification-ui
- * Automatically copies built assets to public_templates/webrtc-ui/
- * Following the pattern established by threejs-gamify-ui
- */
-
 const fs = require('fs');
 const path = require('path');
 
-function copyDirectory(src, dest) {
-  if (!fs.existsSync(src)) {
-    console.log(`⚠️  Source directory not found: ${src}`);
-    return false;
-  }
-
-  // Create destination directory
-  if (!fs.existsSync(dest)) {
-    fs.mkdirSync(dest, { recursive: true });
-  }
-
-  // Copy files recursively
-  const entries = fs.readdirSync(src, { withFileTypes: true });
-  
-  for (const entry of entries) {
-    const srcPath = path.join(src, entry.name);
-    const destPath = path.join(dest, entry.name);
-    
-    if (entry.isDirectory()) {
-      copyDirectory(srcPath, destPath);
-    } else {
-      fs.copyFileSync(srcPath, destPath);
-    }
-  }
-  
-  return true;
-}
-
 function main() {
-  console.log('📦 Installing WebRTC Gamification UI assets...');
+  console.log('🔧 Setting up WebRTC Gamification UI...');
   
-  // We're being installed as a dependency
-  const packageRoot = __dirname;
+  // Detect if we're being installed in state-machine-mcp-driver
+  const currentDir = process.cwd();
+  const projectRoot = findProjectRoot(currentDir);
   
-  // Source: compiled library distribution
-  const sourceDir = path.join(packageRoot, '..', 'dist', 'webrtc-ui-lib');
-  
-  // Find the project root (where this package is installed)
-  let projectRoot = packageRoot;
-  let depth = 0;
-  
-  while (depth < 10) {
-    const parentDir = path.dirname(projectRoot);
-    if (parentDir === projectRoot) break; // reached filesystem root
-    
-    projectRoot = parentDir;
-    depth++;
-    
-    // Check if we're in node_modules and find the actual project root
-    if (projectRoot.includes('node_modules')) {
-      const parts = projectRoot.split(path.sep);
-      const nodeModulesIndex = parts.lastIndexOf('node_modules');
-      if (nodeModulesIndex > 0) {
-        projectRoot = parts.slice(0, nodeModulesIndex).join(path.sep);
-        break;
-      }
-    }
-    
-    // Check if we found a project root
-    if (fs.existsSync(path.join(projectRoot, 'package.json')) && 
-        !projectRoot.includes('node_modules')) {
-      break;
-    }
+  if (!projectRoot) {
+    console.log('📦 WebRTC Gamification UI installed successfully!');
+    console.log('ℹ️  Not in a target project - skipping asset copy.');
+    return;
   }
   
-  // Target: public_templates directory in the consuming project
-  const targetDir = path.join(projectRoot, 'public_templates', 'webrtc-ui');
+  // Check if this is state-machine-mcp-driver or similar project that needs our assets
+  const packageJsonPath = path.join(projectRoot, 'package.json');
+  if (!fs.existsSync(packageJsonPath)) {
+    console.log('📦 WebRTC Gamification UI installed successfully!');
+    return;
+  }
+
+  let packageJson;
+  try {
+    packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+  } catch (error) {
+    console.log('📦 WebRTC Gamification UI installed successfully!');
+    return;
+  }
+
+  // Check if this is a project that uses our UI (state-machine-mcp-driver or similar)
+  const isTargetProject = packageJson.name === 'state-machine-mcp-driver' || 
+                         packageJson.dependencies?.['webrtc-gamification-ui'] ||
+                         packageJson.devDependencies?.['webrtc-gamification-ui'] ||
+                         fs.existsSync(path.join(projectRoot, 'src', 'ui', 'MultiUIGameManager.ts'));
   
-  console.log(`📍 Project root: ${projectRoot}`);
-  console.log(`📂 Source: ${sourceDir}`);
-  console.log(`📁 Target: ${targetDir}`);
+  if (!isTargetProject) {
+    console.log('📦 WebRTC Gamification UI installed successfully!');
+    console.log('ℹ️  Not a target project - skipping asset copy.');
+    return;
+  }
+
+  // Find our package in node_modules
+  const packagePath = findOurPackage(projectRoot);
+  if (!packagePath) {
+    console.log('⚠️  Could not locate webrtc-gamification-ui package path');
+    return;
+  }
   
-  // Check if source exists
-  if (!fs.existsSync(sourceDir)) {
-    console.log('⚠️  WebRTC UI library dist not found. Build the library first:');
-    console.log('   npm run build');
+  // Check if our dist exists (Angular 20 generates in browser subdirectory)
+  const distPath = path.join(packagePath, 'dist', 'web-rtc-gamify-ui', 'browser');
+  if (!fs.existsSync(distPath)) {
+    console.log('⚠️  Angular dist not found. Package may not be built properly.');
+    console.log(`   Expected: ${distPath}`);
     return;
   }
   
@@ -92,31 +62,116 @@ function main() {
   const publicTemplatesDir = path.join(projectRoot, 'public_templates');
   if (!fs.existsSync(publicTemplatesDir)) {
     fs.mkdirSync(publicTemplatesDir, { recursive: true });
-    console.log(`✅ Created public_templates directory`);
   }
   
-  // Copy assets
-  console.log('🔄 Copying WebRTC UI assets...');
+  // Target directory for our assets
+  const targetPath = path.join(publicTemplatesDir, 'web-rtc-gamify-ui');
   
-  if (copyDirectory(sourceDir, targetDir)) {
-    console.log('✅ WebRTC UI assets installed successfully!');
-    console.log(`📍 Assets available at: ${targetDir}`);
-    console.log('🎮 You can now use provideTemplate: true in your WebRTC configuration');
-  } else {
-    console.log('❌ Failed to copy WebRTC UI assets');
-    console.log('   Make sure the library is built: npm run build');
+  console.log(`📦 Copying WebRTC UI assets from package to ${targetPath}`);
+  
+  try {
+    // Remove existing assets
+    if (fs.existsSync(targetPath)) {
+      fs.rmSync(targetPath, { recursive: true, force: true });
+    }
+    
+    // Copy dist to public_templates/web-rtc-gamify-ui
+    copyDirectory(distPath, targetPath);
+    
+    console.log('✅ WebRTC Gamification UI setup completed successfully!');
+    console.log(`📍 Assets copied to: ${targetPath}`);
+    console.log('🌐 You can now use provideTemplate: true in your UI configuration');
+    console.log('🎮 The UI will be available at http://localhost:8081 (or configured port)');
+    
+  } catch (error) {
+    console.error('❌ Error during WebRTC UI setup:', error.message);
+    console.error('   The UI will fall back to dynamic HTML mode');
   }
 }
 
-// Only run if this script is executed directly during npm install
-if (require.main === module) {
-  try {
-    main();
-  } catch (error) {
-    console.error('❌ PostInstall script failed:', error.message);
-    // Don't fail the installation, just warn
-    process.exit(0);
+/**
+ * Find the root of the project where this package is being installed
+ */
+function findProjectRoot(startDir) {
+  let currentDir = startDir;
+  
+  // Go up directories looking for a package.json that's not ours
+  while (currentDir !== path.dirname(currentDir)) { // not root
+    const packageJsonPath = path.join(currentDir, 'package.json');
+    
+    if (fs.existsSync(packageJsonPath)) {
+      try {
+        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+        // If this is not our package, we found the project root
+        if (packageJson.name !== 'webrtc-gamification-ui') {
+          return currentDir;
+        }
+      } catch (error) {
+        // Continue searching
+      }
+    }
+    
+    currentDir = path.dirname(currentDir);
   }
+  
+  return null;
+}
+
+/**
+ * Find our package in node_modules
+ */
+function findOurPackage(projectRoot) {
+  // Try different possible locations
+  const possiblePaths = [
+    path.join(projectRoot, 'node_modules', 'webrtc-gamification-ui'),
+    path.join(projectRoot, 'node_modules', '@escrivivir', 'webrtc-gamification-ui'),
+  ];
+  
+  for (const possiblePath of possiblePaths) {
+    if (fs.existsSync(possiblePath)) {
+      // Check if this directory has our dist or is our package
+      const distPath = path.join(possiblePath, 'dist');
+      const packageJsonPath = path.join(possiblePath, 'package.json');
+      
+      if (fs.existsSync(distPath)) {
+        return possiblePath;
+      }
+      
+      // If it's a monorepo package, look for packages/node-red-gamify-ui
+      const packagePath = path.join(possiblePath, 'packages', 'node-red-gamify-ui');
+      if (fs.existsSync(packagePath) && fs.existsSync(path.join(packagePath, 'dist'))) {
+        return packagePath;
+      }
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Recursively copy directory
+ */
+function copyDirectory(src, dest) {
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
+  }
+
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+
+    if (entry.isDirectory()) {
+      copyDirectory(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
+if (require.main === module) {
+  main();
 }
 
 module.exports = { main };
