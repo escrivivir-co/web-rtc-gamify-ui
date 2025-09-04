@@ -47,6 +47,8 @@ import { io, Socket } from 'socket.io-client';
                 <button (click)="sendTestMessage()">Send Test Message</button>
                 <button (click)="sendHeartbeat()">Send Heartbeat</button>
                 <button (click)="sendGameAction('webrtc_ready', {peers: 0})">Send Game Action</button>
+                <button (click)="sendGetListOfThreads()">🧵 Get Threads</button>
+                <button (click)="sendMakeMaster()">👑 Make Master</button>
               }
             }
           </div>
@@ -343,6 +345,17 @@ export class AlephScriptWebRTCUIComponent implements OnInit, OnDestroy {
         if (event.includes('CLIENT') || event.includes('ROOM') || event.includes('USER')) {
           console.log(`🔍 AlephScript Event Detail: ${event}`, JSON.stringify(args, null, 2));
         }
+        
+        // Handle specific responses
+        if (event === 'SET_LIST_OF_THREADS') {
+          console.log('📋 [AlephScript] Received SET_LIST_OF_THREADS:', args);
+          this.lastMessage.set('Received thread list');
+        }
+        
+        if (event === 'MAKE_MASTER') {
+          console.log('👑 [AlephScript] MAKE_MASTER response:', args);
+          this.lastMessage.set('MAKE_MASTER response received');
+        }
       });
 
     } catch (error) {
@@ -412,6 +425,36 @@ export class AlephScriptWebRTCUIComponent implements OnInit, OnDestroy {
       this.lastMessage.set(`Game action sent: ${action}`);
     } else {
       console.warn('⚠️ Cannot send game action - socket not connected');
+    }
+  }
+
+  // Test GET_LIST_OF_THREADS event
+  sendGetListOfThreads(): void {
+    if (this.socket && this.socket.connected) {
+      console.log('📋 [AlephScript] Sending GET_LIST_OF_THREADS request');
+      this.socket.emit('GET_LIST_OF_THREADS', {
+        requesterName: 'WebRTCGamificationUI',
+        timestamp: Date.now(),
+        room: this.roomName()
+      });
+      this.lastMessage.set('GET_LIST_OF_THREADS sent');
+    } else {
+      console.warn('⚠️ Cannot send GET_LIST_OF_THREADS - socket not connected');
+    }
+  }
+
+  // Test MAKE_MASTER event
+  sendMakeMaster(): void {
+    if (this.socket && this.socket.connected) {
+      console.log('👑 [AlephScript] Sending MAKE_MASTER request');
+      this.socket.emit('MAKE_MASTER', {
+        features: ['GET_LIST_OF_THREADS', 'GET_ENGINE'],
+        timestamp: Date.now(),
+        room: this.roomName()
+      });
+      this.lastMessage.set('MAKE_MASTER sent');
+    } else {
+      console.warn('⚠️ Cannot send MAKE_MASTER - socket not connected');
     }
   }
 }

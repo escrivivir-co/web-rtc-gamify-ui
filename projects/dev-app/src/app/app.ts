@@ -168,16 +168,12 @@ export class App implements OnInit, OnDestroy {
       
       // STEP 1: CLIENT_REGISTER
       this.executeStep1Register();
-    });
 
-    // STEP 1 Response: CLIENT_REGISTERED
-    this.socket.on('CLIENT_REGISTERED', (data: any) => {
-      console.log('✅ [Demo] STEP 1 COMPLETE: CLIENT_REGISTERED received:', data);
       this.connectionStatus.set('registered');
       this.isRegistered.set(true);
       this.protocolStep.set(1);
       this.currentStep.set('Registered - Starting subscription...');
-      this.addMessage('app', 'CLIENT_REGISTERED', data);
+      this.executeStep2Subscribe();;
       
       // STEP 2: CLIENT_SUSCRIBE
       this.executeStep2Subscribe();
@@ -238,7 +234,9 @@ export class App implements OnInit, OnDestroy {
     
     console.log('🏠 [Demo] STEP 2/3: Sending CLIENT_SUSCRIBE:', payload);
     this.socket?.emit('CLIENT_SUSCRIBE', payload);
-    this.addMessage('app', 'CLIENT_SUSCRIBE_SENT', payload);
+    this.addMessage('app', 'CLIENT_SUSCRIBE', payload);
+    this.addMessage('app', 'MAKE_MASTER', {features: []});
+    
   }
 
   private executeStep3CheckMaster(data: any): void {
