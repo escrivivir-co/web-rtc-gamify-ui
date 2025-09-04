@@ -1,6 +1,7 @@
 import { Component, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { io, Socket } from 'socket.io-client';
+import { UI_GEA_RTC_BOT } from '../../configs/UI_GEA_RTC_BOT';
 
 @Component({
   selector: 'wrtc-alephscript-webrtc-ui',
@@ -226,7 +227,7 @@ export class AlephScriptWebRTCUIComponent implements OnInit, OnDestroy {
   // Game state
   readonly currentPhase = signal('Lobby');
   readonly connectedPeers = signal<Array<{id: string, status: string}>>([]);
-  readonly roomName = signal('WebRTCUI_WebRTC Gamification UI_ROOM');
+  readonly roomName = signal(UI_GEA_RTC_BOT);
   
   // Debug
   readonly angularVersion = signal('20');

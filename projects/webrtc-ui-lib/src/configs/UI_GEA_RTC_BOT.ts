@@ -1,0 +1,1 @@
+export const UI_GEA_RTC_BOT = "UI_Gea_RTC_BOT"
