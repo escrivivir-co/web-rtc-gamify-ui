@@ -57,15 +57,6 @@ try {
       console.log('❌ Estructura de librería no encontrada');
     }
     
-    // Check demo app
-    const demoPath = path.join(currentDir, 'projects', 'demo-app');
-    if (fs.existsSync(demoPath)) {
-      console.log('✅ Demo app encontrada');
-    } else {
-      console.log('⚠️  Demo app no encontrada');
-    }
-    
-    // Check build configuration
     const angularJsonPath = path.join(currentDir, 'angular.json');
     if (fs.existsSync(angularJsonPath)) {
       console.log('✅ Configuración Angular encontrada');

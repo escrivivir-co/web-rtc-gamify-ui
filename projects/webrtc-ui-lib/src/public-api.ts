@@ -5,6 +5,11 @@
 // Main AlephScript Component (New)
 export * from './lib/components/alephscript-webrtc-ui.component';
 
+// Core Services
+export * from './lib/core/services/alephscript-webrtc.service';
+export * from './lib/core/services/signaling.service';
+export * from './lib/core/services/webrtc.service';
+
 // Integration Services (Phase 4.1-4.2)
 export * from './lib/integration/webrtc-aleph-client.service';
 export * from './lib/integration/webrtc-engine.service';

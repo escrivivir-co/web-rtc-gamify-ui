@@ -25,51 +25,7 @@
 
 ---
 
-## 🏗️ Development
-
-### Quick Start Scripts
-
-```bash
-# Build library (production)
-npm run build
-
-# Build library (development with watch)
-npm run dev
-npm start                 # Alias for dev
-
-# Build library (production optimized)  
-npm run build:prod
-
-# Build library with watch mode
-npm run build:watch
-
-# Debug mode (with source maps and watch)
-npm run debug
-
-# Run tests
-npm test
-npm run test:watch      # Tests in watch mode
-
-# Lint code
-npm run lint
-
-# Clean build artifacts
-npm run clean
-
-# Package for distribution
-npm run build:package   # Builds + creates .tgz
-npm pack               # Just creates .tgz
-```
-
-### Development Workflow
-
-1. **Start development**: `npm run dev` - Builds library in watch mode
-2. **Debug issues**: `npm run debug` - Enables source maps for debugging  
-3. **Test changes**: `npm test` - Run unit tests
-4. **Build for production**: `npm run build:prod`
-5. **Package for distribution**: `npm run build:package`
-
-### Project Structure
+## 🏗️ Arquitectura
 
 ```
 web-rtc-gamify-ui/

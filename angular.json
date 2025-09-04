@@ -3,28 +3,57 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "web-rtc-gamify-ui": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
+    "webrtc-ui-lib": {
+      "projectType": "library",
+      "root": "projects/webrtc-ui-lib",
+      "sourceRoot": "projects/webrtc-ui-lib/src",
+      "prefix": "wrtc",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/webrtc-ui-lib/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/webrtc-ui-lib/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/webrtc-ui-lib/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
         }
-      },
-      "root": "",
-      "sourceRoot": "src",
+      }
+    },
+    "dev-app": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/dev-app",
+      "sourceRoot": "projects/dev-app/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/web-rtc-gamify-ui",
-            "index": "src/index.html",
-            "browser": "src/main.ts",
-            "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
-            "scripts": []
+            "browser": "projects/dev-app/src/main.ts",
+            "tsConfig": "projects/dev-app/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/dev-app/public"
+              }
+            ],
+            "styles": [
+              "projects/dev-app/src/styles.css"
+            ]
           },
           "configurations": {
             "production": {
@@ -54,10 +83,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "web-rtc-gamify-ui:build:production"
+              "buildTarget": "dev-app:build:production"
             },
             "development": {
-              "buildTarget": "web-rtc-gamify-ui:build:development"
+              "buildTarget": "dev-app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -68,10 +97,16 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "tsConfig": "tsconfig.spec.json",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
-            "scripts": []
+            "tsConfig": "projects/dev-app/tsconfig.spec.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/dev-app/public"
+              }
+            ],
+            "styles": [
+              "projects/dev-app/src/styles.css"
+            ]
           }
         }
       }

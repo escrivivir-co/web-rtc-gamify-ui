@@ -17,7 +17,6 @@ Crear una librería Angular que proporcione una interfaz profesional para WebRTC
 #### 1.1 Configuración del Proyecto Angular
 - [x] **Crear workspace Angular**: `ng new web-rtc-gamify-ui --create-application=false`
 - [x] **Generar librería**: `ng generate library webrtc-ui-lib`
-- [x] **Generar demo app**: `ng generate application demo-app`
 - [x] **Configurar angular.json**: Build targets y configuraciones de distribución
 - [x] **Setup package.json**: Scripts, dependencias y metadata del paquete
 - [x] **Configurar tsconfig.json**: Configuraciones TypeScript específicas
@@ -262,10 +261,7 @@ npm run e2e                # Cypress o Protractor
 ```
 
 ### Development Scripts
-```bash
-# Demo app
-npm run demo               # ng serve demo-app
-npm run demo:build         # ng build demo-app
+
 
 # Linting
 npm run lint               # ng lint webrtc-ui-lib

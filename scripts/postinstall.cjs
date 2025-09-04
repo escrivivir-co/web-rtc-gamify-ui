@@ -51,10 +51,11 @@ function main() {
   }
   
   // Check if our dist exists (Angular 20 generates in browser subdirectory)
-  const distPath = path.join(packagePath, 'dist', 'web-rtc-gamify-ui', 'browser');
+  const distPath = path.join(packagePath, 'dist', 'dev-app', 'browser');
   if (!fs.existsSync(distPath)) {
-    console.log('⚠️  Angular dist not found. Package may not be built properly.');
+    console.log('⚠️  Angular demo app not found. Package may not be built properly.');
     console.log(`   Expected: ${distPath}`);
+    console.log('   Run "npm run build:demo" in your webrtc-gamify-ui project to build the demo app.');
     return;
   }
   

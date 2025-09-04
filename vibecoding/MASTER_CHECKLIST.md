@@ -43,7 +43,6 @@ AFTER:  state-machine-mcp-driver/src/ui/WebRTCGamificationUI.ts ✅
 
 **Paquete Principal:** `web-rtc-gamify-ui`
 - **Librería Angular:** `projects/webrtc-ui-lib` - Angular library con componentes WebRTC
-- **Demo App:** `projects/demo-app` - Aplicación demostración
 - **Integration:** `WebRTCGamificationUI` - Clase que extiende GamificationUI
 
 ## 🎯 OBJETIVO PRINCIPAL
@@ -357,7 +356,6 @@ UIFactory.createUI("webrtc", config) → WebRTCGamificationUI
 ```
 web-rtc-gamify-ui/
 ├── projects/webrtc-ui-lib/ (Angular library)
-├── projects/demo-app/ (demonstration app)
 ├── scripts/postinstall.cjs (distribution automation)
 ├── dist/ (built Angular app)
 ├── public_templates/ (→ destination via postinstall)

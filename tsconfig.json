@@ -36,10 +36,10 @@
       "path": "./projects/webrtc-ui-lib/tsconfig.spec.json"
     },
     {
-      "path": "./projects/demo-app/tsconfig.app.json"
+      "path": "./projects/dev-app/tsconfig.app.json"
     },
     {
-      "path": "./projects/demo-app/tsconfig.spec.json"
+      "path": "./projects/dev-app/tsconfig.spec.json"
     }
   ]
 }

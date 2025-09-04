@@ -231,7 +231,10 @@ export class AlephScriptWebRTCUIComponent implements OnInit, OnDestroy {
   readonly lastMessage = signal<string>('');
 
   constructor() {
-    console.log('🎮 AlephScript WebRTC UI Component initialized');
+    console.log('🎮 [AlephScript] WebRTC UI Component initialized');
+    console.log('📋 [AlephScript] Session Hash:', this.sessionHash);
+    console.log('🏠 [AlephScript] Target Room:', this.roomName());
+    console.log('🔧 [AlephScript] Component ready for connection');
   }
 
   ngOnInit(): void {
@@ -247,11 +250,13 @@ export class AlephScriptWebRTCUIComponent implements OnInit, OnDestroy {
   }
 
   initializeConnection(): void {
+    console.log('🚀 [AlephScript] Starting AlephScript connection protocol...');
     this.isConnecting.set(true);
     this.connectionStatus.set('connecting');
     
     try {
       // Connect to AlephScript server
+      console.log('🔌 [AlephScript] Attempting connection to AlephScript server at localhost:3000');
       this.socket = io('http://localhost:3000', {
         reconnection: true,
         reconnectionAttempts: 5,
@@ -259,48 +264,59 @@ export class AlephScriptWebRTCUIComponent implements OnInit, OnDestroy {
       });
       
       this.socket.on('connect', () => {
-        console.log('🔌 Connected to AlephScript server');
+        console.log('✅ [AlephScript] Connected to AlephScript server successfully');
+        console.log('🆔 [AlephScript] Socket ID:', this.socket?.id);
         this.connectionStatus.set('connected');
         
         // STEP 1: CLIENT_REGISTER with correct AlephScript protocol
-        this.socket?.emit('CLIENT_REGISTER', {
+        const registerPayload = {
           usuario: 'WebRTCGamificationUI',
           sesion: this.sessionHash
-        });
+        };
+        
+        console.log('📝 [AlephScript] STEP 1/3: Sending CLIENT_REGISTER with payload:', registerPayload);
+        this.socket?.emit('CLIENT_REGISTER', registerPayload);
         
         this.lastMessage.set('CLIENT_REGISTER sent');
-        console.log('📝 CLIENT_REGISTER sent');
       });
 
       this.socket.on('CLIENT_REGISTERED', (data: any) => {
-        console.log('✅ CLIENT_REGISTERED:', data);
+        console.log('✅ [AlephScript] STEP 1 COMPLETE: CLIENT_REGISTERED received with data:', data);
         this.lastMessage.set('Client registered successfully');
         
         // STEP 2: CLIENT_SUSCRIBE to room
-        this.socket?.emit('CLIENT_SUSCRIBE', {
+        const subscribePayload = {
           room: this.roomName()
-        });
+        };
         
-        console.log('🏠 CLIENT_SUSCRIBE sent for room:', this.roomName());
+        console.log('🏠 [AlephScript] STEP 2/3: Sending CLIENT_SUSCRIBE with payload:', subscribePayload);
+        this.socket?.emit('CLIENT_SUSCRIBE', subscribePayload);
+        this.lastMessage.set('CLIENT_SUSCRIBE sent');
       });
 
       this.socket.on('CLIENT_SUBSCRIBED', (data: any) => {
-        console.log('✅ CLIENT_SUBSCRIBED:', data);
+        console.log('✅ [AlephScript] STEP 2 COMPLETE: CLIENT_SUBSCRIBED received with data:', data);
         this.connectionStatus.set('registered');
         this.isConnecting.set(false);
-        this.lastMessage.set(`Subscribed to room: ${data.room}`);
+        this.lastMessage.set(`Subscribed to room: ${data.room || this.roomName()}`);
         
-        // Check if we became master
+        // Check if we became master (STEP 3 implicit)
         if (data.isMaster) {
+          console.log('👑 [AlephScript] STEP 3: Became MASTER of the room!');
           this.isMaster.set(true);
           this.currentPhase.set('Master - Room Control');
         } else {
+          console.log('👥 [AlephScript] STEP 3: Joined as FOLLOWER');
           this.currentPhase.set('Connected - Follower');
         }
+        
+        console.log('🎉 [AlephScript] Protocol complete! Ready for WebRTC signaling.');
+        console.log('📊 [AlephScript] Final state - Room:', this.roomName(), 'Master:', this.isMaster());
       });
 
       this.socket.on('disconnect', () => {
         console.log('🔌 Disconnected from AlephScript server');
+        console.log('📊 Final state before disconnect - Master:', this.isMaster(), 'Phase:', this.currentPhase());
         this.connectionStatus.set('disconnected');
         this.isMaster.set(false);
         this.currentPhase.set('Lobby');
@@ -309,6 +325,11 @@ export class AlephScriptWebRTCUIComponent implements OnInit, OnDestroy {
 
       this.socket.on('connect_error', (error: any) => {
         console.error('❌ Connection error:', error);
+        console.error('🔍 Error details:', {
+          message: error.message,
+          type: error.type,
+          description: error.description
+        });
         this.connectionStatus.set('disconnected');
         this.isConnecting.set(false);
         this.lastMessage.set(`Connection error: ${error.message}`);
@@ -316,7 +337,12 @@ export class AlephScriptWebRTCUIComponent implements OnInit, OnDestroy {
 
       // Listen for all events for debugging
       this.socket.onAny((event: string, ...args: any[]) => {
-        console.log(`🎧 Event: ${event}`, args);
+        console.log(`🎧 Socket Event Received: ${event}`, args);
+        
+        // Log specific events we're interested in
+        if (event.includes('CLIENT') || event.includes('ROOM') || event.includes('USER')) {
+          console.log(`🔍 AlephScript Event Detail: ${event}`, JSON.stringify(args, null, 2));
+        }
       });
 
     } catch (error) {
@@ -341,36 +367,51 @@ export class AlephScriptWebRTCUIComponent implements OnInit, OnDestroy {
 
   sendTestMessage(): void {
     if (this.socket && this.socket.connected) {
-      this.socket.emit('user_input', {
+      const payload = {
         input: 'Test message from WebRTC UI',
         metadata: { source: 'webrtc-ui', type: 'test' },
         timestamp: Date.now(),
         room: this.roomName()
-      });
+      };
+      
+      console.log('💬 Sending test message via user_input channel:', payload);
+      this.socket.emit('user_input', payload);
       this.lastMessage.set('Test message sent via user_input');
+    } else {
+      console.warn('⚠️ Cannot send test message - socket not connected');
     }
   }
 
   sendHeartbeat(): void {
     if (this.socket && this.socket.connected) {
-      this.socket.emit('client_heartbeat', {
+      const payload = {
         timestamp: Date.now(),
         room: this.roomName(),
         uiType: 'WebRTCUI'
-      });
-      console.log('💓 Heartbeat sent');
+      };
+      
+      console.log('💓 Sending heartbeat via client_heartbeat channel:', payload);
+      this.socket.emit('client_heartbeat', payload);
+      this.lastMessage.set('Heartbeat sent');
+    } else {
+      console.warn('⚠️ Cannot send heartbeat - socket not connected');
     }
   }
 
   sendGameAction(action: string, payload: any = {}): void {
     if (this.socket && this.socket.connected) {
-      this.socket.emit('game_action', {
+      const gamePayload = {
         action,
         payload,
         timestamp: Date.now(),
         room: this.roomName()
-      });
+      };
+      
+      console.log('🎮 Sending game action via game_action channel:', gamePayload);
+      this.socket.emit('game_action', gamePayload);
       this.lastMessage.set(`Game action sent: ${action}`);
+    } else {
+      console.warn('⚠️ Cannot send game action - socket not connected');
     }
   }
 }

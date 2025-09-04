@@ -1,0 +1,185 @@
+<div class="demo-container">
+  <header class="demo-header">
+    <h1>{{ title() }}</h1>
+    <div class="status-badge" [class]="'status-' + connectionStatus()">
+      {{ connectionStatus().toUpperCase() }}
+      @if (isMaster()) {
+        👑 MASTER
+      }
+    </div>
+  </header>
+
+  <!-- Main AlephScript WebRTC UI Component -->
+  <section class="main-component">
+    <h2>🎮 AlephScript WebRTC Component</h2>
+    <wrtc-alephscript-webrtc-ui></wrtc-alephscript-webrtc-ui>
+  </section>
+
+  <!-- Protocol Control Panel -->
+  <section class="protocol-panel">
+    <h2>🌐 AlephScript Protocol Control</h2>
+    
+    <div class="connection-info">
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Room:</label>
+          <input 
+            type="text" 
+            [value]="currentRoom()" 
+            (input)="updateRoomName($event)"
+            [disabled]="connectionStatus() !== 'disconnected'"
+          />
+        </div>
+        <div class="info-item">
+          <label>Session:</label>
+          <span>{{ sessionHash }}</span>
+        </div>
+        <div class="info-item">
+          <label>Step:</label>
+          <span>{{ protocolStep() }}/3 - {{ currentStep() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      @if (connectionStatus() === 'disconnected') {
+        <button (click)="initializeAlephScript()" class="btn btn-primary">
+          🚀 Connect to AlephScript
+        </button>
+      } @else {
+        <button (click)="disconnect()" class="btn btn-danger">
+          🔌 Disconnect
+        </button>
+      }
+      
+      @if (connectionStatus() === 'master' || connectionStatus() === 'subscribed') {
+        <button (click)="toggleAdvanced()" class="btn btn-secondary">
+          {{ showAdvanced() ? '🔼 Hide Advanced' : '🔽 Show Advanced' }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- Advanced Controls (only when connected) -->
+  @if (showAdvanced() && (connectionStatus() === 'master' || connectionStatus() === 'subscribed')) {
+    <section class="advanced-panel">
+      <h2>🔧 Advanced Controls</h2>
+      
+      <!-- 3-Channel Communication Test -->
+      <div class="channel-tests">
+        <h3>📡 Channel Communication Tests</h3>
+        <div class="channel-grid">
+          <div class="channel-item">
+            <h4>APP Channel</h4>
+            <p>{{ appChannel() }}</p>
+            <button (click)="testAppChannel()" class="btn btn-sm">Test APP</button>
+          </div>
+          <div class="channel-item">
+            <h4>SYS Channel</h4>
+            <p>{{ sysChannel() }}</p>
+            <button (click)="testSysChannel()" class="btn btn-sm">Test SYS</button>
+          </div>
+          <div class="channel-item">
+            <h4>UI Channel</h4>
+            <p>{{ uiChannel() }}</p>
+            <button (click)="testUIChannel()" class="btn btn-sm">Test UI</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Session Controls (only for master) -->
+      @if (isMaster()) {
+        <div class="game-controls">
+          <h3>🎮 Game Session Controls (Master Only)</h3>
+          <div class="game-info">
+            <p><strong>Phase:</strong> {{ gameSession().phase }}</p>
+            <p><strong>Players:</strong> {{ gameSession().players.length }}</p>
+          </div>
+          <div class="game-buttons">
+            <button (click)="startGame()" 
+                    [disabled]="gameSession().phase === 'playing'" 
+                    class="btn btn-success">
+              ▶️ Start Game
+            </button>
+            <button (click)="pauseGame()" 
+                    [disabled]="gameSession().phase !== 'playing'" 
+                    class="btn btn-warning">
+              ⏸️ Pause Game
+            </button>
+            <button (click)="endGame()" 
+                    [disabled]="gameSession().phase === 'ended'" 
+                    class="btn btn-danger">
+              ⏹️ End Game
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- WebRTC Preparation -->
+      <div class="webrtc-prep">
+        <h3>📹 WebRTC Preparation</h3>
+        <p>WebRTC signaling will use the AlephScript channels for peer coordination.</p>
+        <div class="webrtc-controls">
+          <button (click)="enableWebRTC()" 
+                  [disabled]="webrtcEnabled()" 
+                  class="btn btn-primary">
+            📹 Enable WebRTC
+          </button>
+          <button (click)="disableWebRTC()" 
+                  [disabled]="!webrtcEnabled()" 
+                  class="btn btn-secondary">
+            📹 Disable WebRTC
+          </button>
+        </div>
+        @if (webrtcEnabled()) {
+          <p class="webrtc-status">✅ WebRTC enabled - Ready for peer connections</p>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Message Log -->
+  <section class="message-log">
+    <div class="log-header">
+      <h2>📜 Protocol Message Log</h2>
+      <button (click)="clearMessages()" class="btn btn-sm">🧹 Clear</button>
+    </div>
+    
+    <div class="messages">
+      @for (msg of messages(); track msg.timestamp) {
+        <div class="message" [class]="'msg-' + msg.type">
+          <span class="msg-time">{{ msg.timestamp | date:'HH:mm:ss.SSS' }}</span>
+          <span class="msg-channel">{{ msg.type.toUpperCase() }}</span>
+          <span class="msg-event">{{ msg.event }}</span>
+          <span class="msg-data">{{ msg.data | json }}</span>
+        </div>
+      } @empty {
+        <div class="no-messages">No messages yet...</div>
+      }
+    </div>
+  </section>
+
+  <!-- Library Components Preview -->
+  <section class="components-preview">
+    <h2>🧩 Available Library Components</h2>
+    <div class="components-grid">
+      <div class="component-preview">
+        <h3>🏠 Room Management</h3>
+        <p>Room creation, listing, and controls</p>
+        <!-- These will be integrated once WebRTC signaling is ready -->
+      </div>
+      <div class="component-preview">
+        <h3>💬 Chat & File Transfer</h3>
+        <p>P2P communication via data channels</p>
+      </div>
+      <div class="component-preview">
+        <h3>🎥 Media Controls</h3>
+        <p>Video, audio, and screen sharing</p>
+      </div>
+      <div class="component-preview">
+        <h3>👥 Peer Management</h3>
+        <p>Peer discovery and connection management</p>
+      </div>
+    </div>
+  </section>
+</div>
